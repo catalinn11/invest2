@@ -1,0 +1,35 @@
+name: Weekly investing alert
+
+on:
+  schedule:
+    # Every Monday at 07:00 UTC (09:00/10:00 Romania time)
+    - cron: '0 7 * * 1'
+  workflow_dispatch: {}   # allows manual run from the Actions tab
+
+env:
+  # 1. Install the "ntfy" app on your phone, subscribe to this topic.
+  # 2. Change it to something secret and unique (anyone who knows it can see your alerts).
+  NTFY_TOPIC: investitii-catalin-x7k2
+  # Tickers to watch (Yahoo Finance symbols), space-separated
+  TICKERS: "TTWO IWDA.AS VUAA.L"
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch prices and send notification
+        run: |
+          MSG=""
+          for T in $TICKERS; do
+            JSON=$(curl -s "https://query1.finance.yahoo.com/v8/finance/chart/$T?interval=1d&range=5d" -H "User-Agent: Mozilla/5.0")
+            PRICE=$(echo "$JSON" | python3 -c "import sys,json;m=json.load(sys.stdin)['chart']['result'][0]['meta'];print(f\"{m['regularMarketPrice']:.2f} {m['currency']}\")" 2>/dev/null || echo "n/a")
+            PREV=$(echo "$JSON" | python3 -c "import sys,json;m=json.load(sys.stdin)['chart']['result'][0]['meta'];p=m.get('chartPreviousClose') or m.get('previousClose');c=m['regularMarketPrice'];print(f\"{(c-p)/p*100:+.1f}%\")" 2>/dev/null || echo "")
+            MSG="$MSG$T: $PRICE ($PREV saptamana)\n"
+          done
+          DAYS=$(( ( $(date -d 2026-11-19 +%s) - $(date +%s) ) / 86400 ))
+          MSG="$MSG\nGTA VI: $DAYS zile ramase\nNu uita: investeste pana la 500 RON luna aceasta (75% ETF / 25% actiuni)."
+          curl -s \
+            -H "Title: Briefing saptamanal investitii" \
+            -H "Tags: chart_with_upwards_trend" \
+            -d "$(echo -e "$MSG")" \
+            "https://ntfy.sh/$NTFY_TOPIC"

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planul Meu de Investiții — XTB</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2d3646;
+    --text:#e6edf3; --muted:#8b98a9; --green:#3fb950; --red:#f85149;
+    --accent:#58a6ff; --gold:#e3b341;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',Roboto,sans-serif;padding:16px;max-width:1000px;margin:0 auto}
+  h1{font-size:1.35rem;margin-bottom:4px}
+  .sub{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .card h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+  .big{font-size:1.5rem;font-weight:700}
+  .green{color:var(--green)} .red{color:var(--red)} .gold{color:var(--gold)} .muted{color:var(--muted)}
+  .small{font-size:.8rem}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th{text-align:left;color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;padding:8px 6px;border-bottom:1px solid var(--border)}
+  td{padding:9px 6px;border-bottom:1px solid var(--border)}
+  tr:last-child td{border-bottom:none}
+  .num{text-align:right}
+  th.num{text-align:right}
+  button{background:var(--accent);color:#0d1117;border:none;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer;font-size:.85rem}
+  button.ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}
+  button.danger{background:transparent;color:var(--red);border:none;padding:4px;font-size:.9rem}
+  input,select{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px;font-size:.85rem;width:100%}
+  label{font-size:.72rem;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end}
+  .bar{background:var(--card2);border-radius:6px;height:10px;overflow:hidden;margin-top:8px}
+  .bar>div{height:100%;background:var(--green);transition:width .4s}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .badge{display:inline-block;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:.72rem;color:var(--muted)}
+  #status{font-size:.75rem;color:var(--muted);margin:8px 0}
+  details{margin-top:16px}
+  summary{cursor:pointer;color:var(--accent);font-size:.85rem}
+  .mb{margin-bottom:16px}
+  @media(max-width:600px){.big{font-size:1.2rem}}
+</style>
+</head>
+<body>
+
+<h1>📈 Planul Meu de Investiții</h1>
+<div class="sub">Buget: 500 RON/lună · Broker: XTB · Strategie: ETF core + acțiuni selectate</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Total investit</h3>
+    <div class="big" id="totalInvested">0 RON</div>
+    <div class="small muted" id="txCount"></div>
+  </div>
+  <div class="card">
+    <h3>Valoare curentă</h3>
+    <div class="big" id="currentValue">—</div>
+    <div class="small" id="totalPL"></div>
+  </div>
+  <div class="card">
+    <h3>Luna aceasta</h3>
+    <div class="big" id="monthInvested">0 / 500 RON</div>
+    <div class="bar"><div id="monthBar" style="width:0%"></div></div>
+  </div>
+  <div class="card">
+    <h3>🎮 GTA VI — 19 nov 2026</h3>
+    <div class="big gold" id="gtaCountdown">—</div>
+    <div class="small muted">Catalizator cheie pentru TTWO</div>
+  </div>
+</div>
+
+<div class="card mb">
+  <h3>Alocare — risc minim, 500 RON/lună</h3>
+  <table>
+    <tr><td>🌍 ETF global acumulativ (IWDA / VUAA) — nucleul</td><td class="num">425–500 RON (85–100%)</td></tr>
+    <tr><td>🎯 Opțional: acțiuni individuale (ex. TTWO)</td><td class="num">0–75 RON (0–15%)</td></tr>
+  </table>
+  <div class="small muted" style="margin-top:8px">Regula de aur: cumpără lunar, indiferent de preț (dollar-cost averaging). Nu încerca să prinzi momentul — consistența bate sincronizarea. Orizont: 10+ ani. Informație educațională, nu consultanță financiară.</div>
+</div>
+
+<div class="card mb">
+  <h3>➕ Adaugă investiție</h3>
+  <div class="form-grid">
+    <div><label>Data</label><input type="date" id="fDate"></div>
+    <div><label>Simbol (Yahoo)</label><input id="fTicker" placeholder="TTWO / IWDA.AS / VUAA.L" list="tickers">
+      <datalist id="tickers"><option value="TTWO"><option value="IWDA.AS"><option value="VUAA.L"><option value="EUNL.DE"><option value="SXR8.DE"></datalist>
+    </div>
+    <div><label>Unități (fracții OK)</label><input type="number" id="fUnits" step="any" placeholder="0.5"></div>
+    <div><label>Sumă plătită (RON)</label><input type="number" id="fAmount" step="any" placeholder="125"></div>
+    <div><button onclick="addTx()">Adaugă</button></div>
+  </div>
+</div>
+
+<div class="card mb">
+  <div class="row" style="justify-content:space-between">
+    <h3>💼 Portofoliu</h3>
+    <div class="row">
+      <button class="ghost" onclick="refreshPrices()">🔄 Actualizează prețuri</button>
+      <button class="ghost" onclick="exportData()">Export</button>
+      <button class="ghost" onclick="document.getElementById('importFile').click()">Import</button>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+    </div>
+  </div>
+  <div id="status"></div>
+  <table id="holdingsTable">
+    <thead><tr><th>Simbol</th><th class="num">Unități</th><th class="num">Investit (RON)</th><th class="num">Preț curent</th><th class="num">Valoare (RON)</th><th class="num">+/-</th></tr></thead>
+    <tbody id="holdingsBody"></tbody>
+  </table>
+</div>
+
+<div class="card mb">
+  <h3>📜 Istoric tranzacții</h3>
+  <table>
+    <thead><tr><th>Data</th><th>Simbol</th><th class="num">Unități</th><th class="num">Sumă (RON)</th><th></th></tr></thead>
+    <tbody id="txBody"></tbody>
+  </table>
+</div>
+
+<details class="card">
+  <summary>🔔 Cum primesc notificări pe telefon (gratuit)</summary>
+  <div class="small" style="margin-top:10px;line-height:1.6">
+    1. Instalează aplicația <b>ntfy</b> (Android/iOS) și abonează-te la un topic secret, ex. <span class="badge">investitii-catalin-x7k2</span><br>
+    2. Repo-ul acestui site include un workflow GitHub Actions (<b>.github/workflows/weekly-alert.yml</b>) care rulează automat în fiecare săptămână, verifică prețurile și îți trimite notificare push — fără server, gratuit.<br>
+    3. Editează în workflow topicul ntfy și simbolurile urmărite. Vezi README pentru pași.
+  </div>
+</details>
+
+<script>
+const LS_KEY='invest_txs_v1';
+const BUDGET=500;
+let txs=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
+let prices={}; // ticker -> {price, currency}
+let fx={};     // USD/EUR/GBP -> RON
+
+const fmt=(n,d=0)=>n.toLocaleString('ro-RO',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+function save(){localStorage.setItem(LS_KEY,JSON.stringify(txs));}
+
+function addTx(){
+  const t={
+    date:document.getElementById('fDate').value||new Date().toISOString().slice(0,10),
+    ticker:document.getElementById('fTicker').value.trim().toUpperCase(),
+    units:parseFloat(document.getElementById('fUnits').value),
+    amount:parseFloat(document.getElementById('fAmount').value)
+  };
+  if(!t.ticker||!t.units||!t.amount){alert('Completează simbol, unități și sumă.');return;}
+  txs.push(t);save();render();refreshPrices();
+  document.getElementById('fUnits').value='';document.getElementById('fAmount').value='';
+}
+
+function delTx(i){if(confirm('Ștergi această tranzacție?')){txs.splice(i,1);save();render();}}
+
+function holdings(){
+  const h={};
+  txs.forEach(t=>{
+    if(!h[t.ticker])h[t.ticker]={units:0,invested:0};
+    h[t.ticker].units+=t.units;h[t.ticker].invested+=t.amount;
+  });
+  return h;
+}
+
+function toRON(price,cur){
+  if(cur==='RON')return price;
+  if(cur==='GBp'){price/=100;cur='GBP';}
+  return fx[cur]?price*fx[cur]:null;
+}
+
+function render(){
+  const h=holdings();
+  let invested=0,value=0,haveAll=true;
+  const body=document.getElementById('holdingsBody');
+  body.innerHTML='';
+  Object.entries(h).forEach(([tk,d])=>{
+    invested+=d.invested;
+    const p=prices[tk];
+    let valStr='—',plStr='—',plCls='muted',priceStr='—';
+    if(p){
+      priceStr=fmt(p.price,2)+' '+p.currency;
+      const ron=toRON(p.price,p.currency);
+      if(ron!=null){
+        const v=ron*d.units;value+=v;
+        const pl=v-d.invested,pct=d.invested?pl/d.invested*100:0;
+        valStr=fmt(v)+' RON';
+        plStr=(pl>=0?'+':'')+fmt(pl)+' ('+(pl>=0?'+':'')+fmt(pct,1)+'%)';
+        plCls=pl>=0?'green':'red';
+      }else haveAll=false;
+    }else haveAll=false;
+    body.innerHTML+=`<tr><td><b>${tk}</b></td><td class="num">${fmt(d.units,4)}</td><td class="num">${fmt(d.invested)}</td><td class="num">${priceStr}</td><td class="num">${valStr}</td><td class="num ${plCls}">${plStr}</td></tr>`;
+  });
+  if(!Object.keys(h).length)body.innerHTML='<tr><td colspan="6" class="muted">Nicio investiție încă. Adaugă prima mai sus. 🚀</td></tr>';
+
+  document.getElementById('totalInvested').textContent=fmt(invested)+' RON';
+  document.getElementById('txCount').textContent=txs.length+' tranzacții';
+  const cv=document.getElementById('currentValue'),tp=document.getElementById('totalPL');
+  if(haveAll&&value>0){
+    cv.textContent=fmt(value)+' RON';
+    const pl=value-invested;
+    tp.textContent=(pl>=0?'▲ +':'▼ ')+fmt(pl)+' RON ('+(pl>=0?'+':'')+fmt(invested?pl/invested*100:0,1)+'%)';
+    tp.className='small '+(pl>=0?'green':'red');
+  }else{cv.textContent='—';tp.textContent='apasă „Actualizează prețuri"';tp.className='small muted';}
+
+  // month progress
+  const ym=new Date().toISOString().slice(0,7);
+  const m=txs.filter(t=>t.date.startsWith(ym)).reduce((s,t)=>s+t.amount,0);
+  document.getElementById('monthInvested').textContent=fmt(m)+' / '+BUDGET+' RON';
+  document.getElementById('monthBar').style.width=Math.min(100,m/BUDGET*100)+'%';
+
+  // tx history
+  const tb=document.getElementById('txBody');
+  tb.innerHTML='';
+  [...txs].reverse().forEach((t,ri)=>{
+    const i=txs.length-1-ri;
+    tb.innerHTML+=`<tr><td>${t.date}</td><td><b>${t.ticker}</b></td><td class="num">${fmt(t.units,4)}</td><td class="num">${fmt(t.amount)}</td><td class="num"><button class="danger" onclick="delTx(${i})">✕</button></td></tr>`;
+  });
+
+  // GTA VI countdown
+  const days=Math.ceil((new Date('2026-11-19')-new Date())/86400000);
+  document.getElementById('gtaCountdown').textContent=days>0?days+' zile':'Lansat! 🎉';
+}
+
+// ---- Live prices (client-side, free) ----
+const PROXIES=[
+  u=>'https://corsproxy.io/?url='+encodeURIComponent(u),
+  u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u)
+];
+
+async function fetchJSON(url){
+  for(const p of PROXIES){
+    try{
+      const r=await fetch(p(url),{signal:AbortSignal.timeout(10000)});
+      if(r.ok)return await r.json();
+    }catch(e){}
+  }
+  throw new Error('fetch failed');
+}
+
+async function fetchFX(){
+  // Frankfurter: free, no key, CORS enabled — direct call, no proxy needed
+  const r=await fetch('https://api.frankfurter.app/latest?from=RON&to=USD,EUR,GBP');
+  const j=await r.json();
+  Object.entries(j.rates).forEach(([c,v])=>fx[c]=1/v); // invert: 1 USD = X RON
+}
+
+async function fetchPrice(tk){
+  const j=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(tk)}?interval=1d&range=1d`);
+  const meta=j.chart.result[0].meta;
+  return {price:meta.regularMarketPrice,currency:meta.currency};
+}
+
+async function refreshPrices(){
+  const st=document.getElementById('status');
+  const tks=Object.keys(holdings());
+  if(!tks.length){st.textContent='';return;}
+  st.textContent='Se actualizează prețurile…';
+  try{await fetchFX();}catch(e){st.textContent='⚠️ Curs valutar indisponibil momentan.';}
+  let ok=0;
+  await Promise.all(tks.map(async tk=>{
+    try{prices[tk]=await fetchPrice(tk);ok++;}catch(e){}
+  }));
+  st.textContent=ok===tks.length
+    ?'✅ Prețuri actualizate la '+new Date().toLocaleTimeString('ro-RO')
+    :`⚠️ ${ok}/${tks.length} prețuri obținute. Reîncearcă în câteva secunde.`;
+  render();
+}
+
+function exportData(){
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(txs,null,2));
+  a.download='investitii-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+function importData(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{txs=JSON.parse(rd.result);save();render();refreshPrices();}catch(e){alert('Fișier invalid');}};
+  rd.readAsText(f);
+}
+
+document.getElementById('fDate').value=new Date().toISOString().slice(0,10);
+render();
+if(txs.length)refreshPrices();
+setInterval(render,60000);
+</script>
+</body>
+</html>
