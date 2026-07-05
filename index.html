@@ -3,213 +3,348 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0b0f14">
-<title>Planul Meu de Investiții — XTB</title>
+<meta name="theme-color" content="#0b0d12">
+<title>Orbit — planul meu de investiții</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b0f14; --card:#131a22; --card2:#1a2330; --border:#26303e;
-    --text:#e8eef5; --muted:#8494a7; --green:#41c463; --red:#f7635c;
-    --accent:#5aa9ff; --gold:#e8b74a;
+    --ink:#0b0d12; --surface:#131721; --surface2:#1b2130; --line:#272f42;
+    --text:#edf1f7; --dim:#8b96ac;
+    --core:#7c9cff;   /* ETF — nucleul */
+    --sat:#f5b83d;    /* actiuni — satelitul */
+    --up:#43d9a3; --down:#ff6b61;
+    --r:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
-    background:var(--bg);color:var(--text);
-    font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
-    padding:14px 14px calc(24px + env(safe-area-inset-bottom));
-    max-width:1000px;margin:0 auto;line-height:1.45;
+    background:var(--ink);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.55;
+    max-width:980px;margin:0 auto;
+    padding:18px 16px calc(30px + env(safe-area-inset-bottom));
   }
-  .num,.big,td.num{font-variant-numeric:tabular-nums}
+  .disp{font-family:'Unbounded',sans-serif}
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+  .up{color:var(--up)} .down{color:var(--down)} .dim{color:var(--dim)}
+  .core-c{color:var(--core)} .sat-c{color:var(--sat)}
+  .small{font-size:.8rem}
 
-  header{padding:6px 2px 14px}
-  h1{font-size:1.25rem;letter-spacing:-.01em}
-  .sub{color:var(--muted);font-size:.82rem;margin-top:2px}
+  /* ---------- top bar ---------- */
+  .top{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 18px}
+  .wordmark{font-family:'Unbounded',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.01em}
+  .wordmark span{color:var(--core)}
+  .sync{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--dim)}
+  .sync i{width:8px;height:8px;border-radius:50%;background:var(--dim);display:inline-block}
+  .sync.on i{background:var(--up)}
+  .sync.off i{background:var(--sat)}
 
-  /* ---- stat cards: 2x2 pe telefon, 4 pe desktop ---- */
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-  @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr);gap:12px}}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
-  .card h3{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;font-weight:600}
-  .big{font-size:1.25rem;font-weight:700;letter-spacing:-.01em}
-  @media(min-width:700px){.big{font-size:1.5rem}}
-  .green{color:var(--green)} .red{color:var(--red)} .gold{color:var(--gold)} .muted{color:var(--muted)}
-  .small{font-size:.78rem}
-  .mb{margin-bottom:14px}
-
-  .bar{background:var(--card2);border-radius:6px;height:8px;overflow:hidden;margin-top:8px}
-  .bar>div{height:100%;background:var(--green);transition:width .4s}
-  @media(prefers-reduced-motion:reduce){.bar>div{transition:none}}
-
-  /* ---- formular ---- */
-  label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
-  input,select{
-    background:var(--card2);border:1px solid var(--border);color:var(--text);
-    border-radius:10px;padding:12px;font-size:16px; /* 16px previne zoom-ul iOS */
-    width:100%;min-height:46px;
+  /* ---------- hero: inelul orbital ---------- */
+  .hero{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:22px;margin-bottom:14px;
+    display:grid;grid-template-columns:auto 1fr;gap:8px 30px;align-items:center;
   }
-  input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media(max-width:639px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center;gap:16px}}
+  .ringwrap{position:relative;width:190px;height:190px}
+  .ringwrap svg{transform:rotate(-90deg)}
+  .ring-c{text-align:center;position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+  .ring-c .amt{font-family:'Unbounded',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:-.01em}
+  .ring-c .cap{font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim)}
+  circle.track{stroke:var(--surface2)}
+  circle.arc{transition:stroke-dashoffset .7s cubic-bezier(.4,0,.2,1)}
+  @media(prefers-reduced-motion:reduce){circle.arc{transition:none}}
+
+  .hero-right{min-width:0}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);margin-bottom:6px}
+  .pf-val{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(1.6rem,6vw,2.3rem);letter-spacing:-.01em;line-height:1.15}
+  .pf-sub{margin-top:8px;font-size:.85rem;color:var(--dim)}
+  .pf-sub b{color:var(--text);font-weight:600}
+  .buckets{display:flex;gap:22px;margin-top:16px;flex-wrap:wrap}
+  @media(max-width:639px){.buckets{justify-content:center}}
+  .bucket .k{font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+  .bucket .v{font-family:'IBM Plex Mono',monospace;font-size:.92rem;font-weight:500}
+  .bucket.core .k{color:var(--core)} .bucket.sat .k{color:var(--sat)}
+  .gta{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:.78rem;color:var(--dim)}
+  .gta b{color:var(--sat);font-family:'IBM Plex Mono',monospace;font-weight:500}
+
+  /* ---------- carduri generice ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+  .card-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);margin-bottom:12px}
+
+  /* ---------- formular ---------- */
+  .chips{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .chip{
+    background:var(--surface2);border:1px solid var(--line);color:var(--text);
+    border-radius:30px;padding:7px 14px;font-size:.8rem;cursor:pointer;font-weight:500;min-height:34px;
+  }
+  .chip.core-c{border-color:color-mix(in srgb,var(--core) 50%,transparent)}
+  .chip.sat-c{border-color:color-mix(in srgb,var(--sat) 50%,transparent)}
+  label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:5px}
+  input{
+    background:var(--surface2);border:1px solid var(--line);color:var(--text);
+    border-radius:11px;padding:12px 13px;font-size:16px;width:100%;min-height:47px;font-family:'Inter',sans-serif;
+  }
+  input:focus-visible,button:focus-visible,summary:focus-visible,.chip:focus-visible{outline:2px solid var(--core);outline-offset:2px}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .form-grid .full{grid-column:1/-1}
-  @media(min-width:700px){
-    .form-grid{grid-template-columns:repeat(4,1fr) auto;align-items:end}
-    .form-grid .full{grid-column:auto}
+  @media(min-width:640px){.form-grid{grid-template-columns:repeat(4,1fr)}}
+  button.primary{
+    background:var(--core);color:var(--ink);border:none;border-radius:11px;
+    padding:13px 20px;font-weight:600;cursor:pointer;font-size:.92rem;min-height:47px;font-family:'Inter',sans-serif;
   }
-  button{
-    background:var(--accent);color:#0b0f14;border:none;border-radius:10px;
-    padding:12px 18px;font-weight:700;cursor:pointer;font-size:.9rem;min-height:46px;
+  button.primary:active{transform:translateY(1px)}
+  button.ghost{
+    background:transparent;color:var(--text);border:1px solid var(--line);border-radius:11px;
+    padding:10px 16px;cursor:pointer;font-size:.83rem;min-height:42px;font-family:'Inter',sans-serif;font-weight:500;
   }
-  button.ghost{background:transparent;color:var(--accent);border:1px solid var(--border);font-weight:600}
-  button.danger{background:transparent;color:var(--red);border:none;padding:8px;font-size:1rem;min-height:auto}
-  .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-  @media(min-width:700px){.actions{display:flex;margin-top:0}}
-  .card-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  button.del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:1rem;padding:6px 8px}
+  button.del:hover{color:var(--down)}
 
-  /* ---- tabele: pe desktop tabel clasic, pe telefon carduri stivuite ---- */
-  table{width:100%;border-collapse:collapse;font-size:.85rem}
-  th{text-align:left;color:var(--muted);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;padding:8px 6px;border-bottom:1px solid var(--border)}
-  td{padding:10px 6px;border-bottom:1px solid var(--border)}
-  tr:last-child td{border-bottom:none}
-  td.num,th.num{text-align:right}
-
-  @media(max-width:699px){
-    .stack thead{display:none}
-    .stack tr{
-      display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;
-      background:var(--card2);border:1px solid var(--border);border-radius:12px;
-      padding:12px;margin-bottom:10px;
-    }
-    .stack td{display:flex;flex-direction:column;border:none;padding:4px 0;text-align:left}
-    .stack td.num{text-align:left}
-    .stack td::before{
-      content:attr(data-l);
-      font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;
-      color:var(--muted);margin-bottom:2px;font-weight:600;
-    }
-    .stack td.lead{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center;font-size:1rem}
-    .stack td.lead::before{display:none}
-    .stack td.act{grid-column:1/-1;flex-direction:row;justify-content:flex-end;padding:0}
-    .stack td.act::before{display:none}
-    .stack tr.empty{display:block}
-    .stack tr.empty td{display:block}
-    .stack tr.empty td::before{display:none}
+  /* ---------- pozitii ---------- */
+  #status{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--dim);margin-bottom:10px;min-height:1em}
+  .pos{
+    display:grid;grid-template-columns:auto 1fr auto;gap:4px 14px;align-items:center;
+    padding:13px 2px;border-bottom:1px solid var(--line);
   }
+  .pos:last-child{border-bottom:none}
+  .pos .tag{width:4px;height:40px;border-radius:2px;background:var(--core)}
+  .pos.is-sat .tag{background:var(--sat)}
+  .pos .name b{font-weight:600;font-size:.98rem}
+  .pos .name .small{margin-top:1px}
+  .pos .fig{text-align:right;font-family:'IBM Plex Mono',monospace}
+  .pos .fig .v{font-size:.95rem;font-weight:500}
+  .pos .fig .small{margin-top:1px}
+  .pos-detail{grid-column:2/4;display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--dim);flex-wrap:wrap}
+  .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .actions .ghost{flex:1;min-width:100px}
+  @media(min-width:640px){.actions{justify-content:flex-end}.actions .ghost{flex:none}}
 
-  #status{font-size:.75rem;color:var(--muted);margin:6px 0 10px}
-  details{margin-top:14px}
-  summary{cursor:pointer;color:var(--accent);font-size:.88rem;padding:4px 0;min-height:32px}
-  .badge{display:inline-block;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:.72rem;color:var(--muted)}
+  /* ---------- istoric ---------- */
+  .tx{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+  .tx:last-child{border-bottom:none}
+  .tx .l b{font-weight:600}
+  .tx .l .small{margin-top:0}
+  .tx .r{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.85rem}
+  .empty{color:var(--dim);font-size:.85rem;padding:10px 2px}
+  .empty a{color:var(--core)}
+
+  details summary{cursor:pointer;color:var(--text);font-size:.88rem;min-height:34px;font-weight:500;list-style-position:outside}
+  .set-grid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}
+  .note{font-size:.8rem;color:var(--dim);margin-top:10px;line-height:1.65}
+  .note b{color:var(--text)}
+  .foot{font-size:.75rem;color:var(--dim);padding:6px 2px 14px;text-align:center}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>📈 Planul Meu de Investiții</h1>
-  <div class="sub">500 RON/lună · XTB · ETF core + satelit opțional</div>
-</header>
-
-<div class="grid">
-  <div class="card">
-    <h3>Total investit</h3>
-    <div class="big" id="totalInvested">0 RON</div>
-    <div class="small muted" id="txCount"></div>
-  </div>
-  <div class="card">
-    <h3>Valoare curentă</h3>
-    <div class="big" id="currentValue">—</div>
-    <div class="small" id="totalPL"></div>
-  </div>
-  <div class="card">
-    <h3>Luna aceasta</h3>
-    <div class="big" id="monthInvested">0 / 500</div>
-    <div class="bar"><div id="monthBar" style="width:0%"></div></div>
-  </div>
-  <div class="card">
-    <h3>🎮 GTA VI · 19 nov</h3>
-    <div class="big gold" id="gtaCountdown">—</div>
-    <div class="small muted">catalizator TTWO</div>
-  </div>
+<div class="top">
+  <div class="wordmark">orbit<span>.</span></div>
+  <div class="sync" id="syncBadge"><i></i><span id="syncText">doar local</span></div>
 </div>
 
-<div class="card mb">
-  <h3>Alocare — risc minim, 500 RON/lună</h3>
-  <table>
-    <tr><td>🌍 ETF global acumulativ (IWDA / VUAA) — nucleul</td><td class="num">425–500 RON</td></tr>
-    <tr><td>🎯 Opțional: acțiuni individuale (ex. TTWO)</td><td class="num">0–75 RON</td></tr>
-  </table>
-  <div class="small muted" style="margin-top:8px">Regula de aur: cumpără lunar, indiferent de preț (dollar-cost averaging). Consistența bate sincronizarea. Orizont: 10+ ani. Informație educațională, nu consultanță financiară.</div>
-</div>
+<!-- ============ HERO: inelul lunii ============ -->
+<section class="hero">
+  <div class="ringwrap">
+    <svg width="190" height="190" viewBox="0 0 190 190" aria-hidden="true">
+      <circle class="track" cx="95" cy="95" r="80" fill="none" stroke-width="13"/>
+      <circle class="arc" id="arcCore" cx="95" cy="95" r="80" fill="none" stroke="var(--core)" stroke-width="13" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="502.65"/>
+      <circle class="track" cx="95" cy="95" r="60" fill="none" stroke-width="9"/>
+      <circle class="arc" id="arcSat" cx="95" cy="95" r="60" fill="none" stroke="var(--sat)" stroke-width="9" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="376.99"/>
+    </svg>
+    <div class="ring-c">
+      <div class="cap" id="monthName">iulie</div>
+      <div class="amt mono" id="monthTotal">0<span class="dim" style="font-size:.8rem">/500</span></div>
+      <div class="cap">ron investiți</div>
+    </div>
+  </div>
 
-<div class="card mb">
-  <h3 style="margin-bottom:10px">➕ Adaugă investiție</h3>
+  <div class="hero-right">
+    <div class="eyebrow">Valoare portofoliu</div>
+    <div class="pf-val mono" id="pfVal">—</div>
+    <div class="pf-sub" id="pfSub">Adaugă prima investiție mai jos — inelul începe să se umple.</div>
+    <div class="buckets">
+      <div class="bucket core"><div class="k">● Nucleu · ETF · 80%</div><div class="v" id="coreProg">0 / 400 RON</div></div>
+      <div class="bucket sat"><div class="k">● Satelit · Acțiuni · 20%</div><div class="v" id="satProg">0 / 100 RON</div></div>
+    </div>
+    <div class="gta">🎮 GTA VI <b id="gtaDays">—</b> <span>· 19 nov 2026 · catalizator TTWO</span></div>
+  </div>
+</section>
+
+<!-- ============ adauga ============ -->
+<section class="card">
+  <div class="card-title">Adaugă investiție</div>
+  <div class="chips">
+    <button class="chip core-c" onclick="pick('IWDA.AS')">IWDA · MSCI World</button>
+    <button class="chip core-c" onclick="pick('VUAA.L')">VUAA · S&amp;P 500</button>
+    <button class="chip sat-c" onclick="pick('TTWO')">TTWO · Take-Two</button>
+  </div>
   <div class="form-grid">
     <div><label for="fDate">Data</label><input type="date" id="fDate"></div>
-    <div><label for="fTicker">Simbol</label><input id="fTicker" placeholder="TTWO / IWDA.AS" list="tickers" autocapitalize="characters">
-      <datalist id="tickers"><option value="TTWO"><option value="IWDA.AS"><option value="VUAA.L"><option value="EUNL.DE"><option value="SXR8.DE"></datalist>
+    <div><label for="fTicker">Simbol</label><input id="fTicker" placeholder="TTWO" list="tickers" autocapitalize="characters">
+      <datalist id="tickers"><option value="TTWO"><option value="IWDA.AS"><option value="VUAA.L"><option value="EUNL.DE"><option value="SXR8.DE"><option value="VWCE.DE"></datalist>
     </div>
     <div><label for="fUnits">Unități (fracții OK)</label><input type="number" id="fUnits" step="any" inputmode="decimal" placeholder="0.5"></div>
-    <div><label for="fAmount">Sumă plătită (RON)</label><input type="number" id="fAmount" step="any" inputmode="decimal" placeholder="125"></div>
-    <div class="full"><button onclick="addTx()" style="width:100%">Adaugă în portofoliu</button></div>
+    <div><label for="fAmount">Sumă plătită (RON)</label><input type="number" id="fAmount" step="any" inputmode="decimal" placeholder="100"></div>
+    <div class="full"><button class="primary" onclick="addTx()" style="width:100%">Adaugă în portofoliu</button></div>
   </div>
-</div>
+</section>
 
-<div class="card mb">
-  <div class="card-head">
-    <h3>💼 Portofoliu</h3>
-  </div>
+<!-- ============ pozitii ============ -->
+<section class="card">
+  <div class="card-title">Poziții</div>
   <div id="status"></div>
-  <table class="stack">
-    <thead><tr><th>Simbol</th><th class="num">Unități</th><th class="num">Investit</th><th class="num">Preț</th><th class="num">Valoare</th><th class="num">+/-</th></tr></thead>
-    <tbody id="holdingsBody"></tbody>
-  </table>
+  <div id="posList"></div>
   <div class="actions">
-    <button class="ghost" onclick="refreshPrices()">🔄 Prețuri</button>
-    <button class="ghost" onclick="exportData()">Export</button>
-    <button class="ghost" onclick="document.getElementById('importFile').click()">Import</button>
+    <button class="ghost" onclick="refreshPrices()">🔄 Actualizează prețuri</button>
+    <button class="ghost" onclick="exportData()">Export date</button>
+    <button class="ghost" onclick="document.getElementById('importFile').click()">Import date</button>
     <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
   </div>
-</div>
+</section>
 
-<div class="card mb">
-  <h3 style="margin-bottom:6px">📜 Istoric tranzacții</h3>
-  <table class="stack">
-    <thead><tr><th>Data</th><th>Simbol</th><th class="num">Unități</th><th class="num">Sumă</th><th></th></tr></thead>
-    <tbody id="txBody"></tbody>
-  </table>
-</div>
+<!-- ============ istoric ============ -->
+<section class="card">
+  <div class="card-title">Istoric</div>
+  <div id="txList"></div>
+</section>
 
-<details class="card">
-  <summary>🔔 Cum primesc notificări pe telefon (gratuit)</summary>
-  <div class="small" style="margin-top:10px;line-height:1.7">
-    1. Instalează aplicația <b>ntfy</b> (Android/iOS) și abonează-te la un topic secret, ex. <span class="badge">investitii-catalin-x7k2</span><br>
-    2. Workflow-ul GitHub Actions din repo (<b>.github/workflows/weekly-alert.yml</b>) rulează automat lunea și îți trimite recomandarea săptămânii push — fără server, gratuit.<br>
-    3. Schimbă topicul ntfy în workflow. Vezi README pentru pași.
-  </div>
-</details>
+<!-- ============ setari ============ -->
+<section class="card">
+  <details>
+    <summary>☁️ Sincronizare cloud (baza ta de date)</summary>
+    <div class="note">
+      Datele se salvează local în browser și, dacă activezi sincronizarea, într-o bază de date <b>Firebase Firestore</b> (gratuită) — aceleași date pe telefon și pe calculator.
+      Configurarea (o singură dată, ~5 min) e explicată în <b>README</b>. Apoi alege un cod secret și introdu-l pe fiecare dispozitiv:
+    </div>
+    <div class="set-grid">
+      <div><label for="fSync">Cod de sincronizare (secret, ales de tine)</label><input id="fSync" placeholder="catalin-orbit-x7k2"></div>
+      <button class="ghost" onclick="setSync()">Conectează</button>
+    </div>
+    <div class="note" id="syncNote"></div>
+  </details>
+</section>
+
+<section class="card">
+  <details>
+    <summary>🔔 Notificări pe telefon (gratuit, prin ntfy)</summary>
+    <div class="note">
+      1. Instalează aplicația <b>ntfy</b> (Android/iOS) și abonează-te la topicul tău secret.<br>
+      2. Workflow-ul din repo (<b>.github/workflows/weekly-alert.yml</b>) rulează automat lunea și trimite push recomandarea săptămânii: ~100 RON ETF + ~25 RON TTWO, cu prețuri și context.<br>
+      3. Schimbă topicul din workflow cu al tău. Pași compleți în README.
+    </div>
+  </details>
+</section>
+
+<div class="foot">Instrument educațional de evidență, nu consultanță financiară. Cumpără constant · nu vinde la panică · orizont 10+ ani.</div>
 
 <script>
-const LS_KEY='invest_txs_v1';
-const BUDGET=500;
+/* ================= CONFIG =================
+   Pentru sincronizare cloud: creeaza un proiect Firebase (gratuit),
+   activeaza Firestore, apoi lipeste config-ul web aici (vezi README).
+   Exemplu:
+   const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"..." };
+*/
+const FIREBASE_CONFIG = null;
+
+const LS_KEY='invest_txs_v1', LS_META='invest_meta_v1', LS_SYNC='invest_sync_id';
+const BUDGET=500, ETF_TARGET=400, STK_TARGET=100;
+const ETF_LIST=['IWDA.AS','VUAA.L','EUNL.DE','SXR8.DE','VWCE.DE','SWDA.L','IUSA.L','VUSA.L'];
+const C_CORE=2*Math.PI*80, C_SAT=2*Math.PI*60;
+
 let txs=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-let prices={};
-let fx={};
+let meta=JSON.parse(localStorage.getItem(LS_META)||'{"updatedAt":0}');
+let prices={}, fx={};
+let db=null, syncId=localStorage.getItem(LS_SYNC)||'';
 
 const fmt=(n,d=0)=>n.toLocaleString('ro-RO',{minimumFractionDigits:d,maximumFractionDigits:d});
+const isETF=tk=>ETF_LIST.includes(tk);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
 
-function save(){localStorage.setItem(LS_KEY,JSON.stringify(txs));}
+function persist(){
+  meta.updatedAt=Date.now();
+  localStorage.setItem(LS_KEY,JSON.stringify(txs));
+  localStorage.setItem(LS_META,JSON.stringify(meta));
+  cloudSave();
+}
+
+/* ---------- cloud (Firebase Firestore) ---------- */
+function setSyncBadge(state,txt){const b=$('syncBadge');b.className='sync '+state;$('syncText').textContent=txt;}
+
+async function initCloud(){
+  const note=$('syncNote');
+  if(syncId)$('fSync').value=syncId;
+  if(!FIREBASE_CONFIG){
+    setSyncBadge('off','doar local');
+    note.innerHTML='Status: <b>doar local</b> — configurează Firebase în index.html (vezi README) ca să activezi baza de date.';
+    return;
+  }
+  if(!syncId){
+    setSyncBadge('off','cloud neconectat');
+    note.innerHTML='Firebase e configurat. Introdu un cod de sincronizare ca să pornești.';
+    return;
+  }
+  try{
+    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const fs=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    const app=initializeApp(FIREBASE_CONFIG);
+    const d=fs.getFirestore(app);
+    db={fs,ref:fs.doc(d,'portfolios',syncId)};
+    const snap=await fs.getDoc(db.ref);
+    if(snap.exists()){
+      const cloud=snap.data();
+      if((cloud.updatedAt||0)>(meta.updatedAt||0)){
+        txs=cloud.txs||[];meta.updatedAt=cloud.updatedAt||Date.now();
+        localStorage.setItem(LS_KEY,JSON.stringify(txs));
+        localStorage.setItem(LS_META,JSON.stringify(meta));
+      }else if((meta.updatedAt||0)>(cloud.updatedAt||0)){
+        await cloudSave();
+      }
+    }else{
+      await cloudSave();
+    }
+    setSyncBadge('on','cloud sincronizat');
+    note.innerHTML='Status: <b>conectat</b>. Datele se salvează automat în Firestore sub codul tău. Folosește același cod pe telefon.';
+    render();refreshPrices();
+  }catch(e){
+    setSyncBadge('off','eroare cloud');
+    note.innerHTML='Nu m-am putut conecta la Firebase: <b>'+esc(e.message)+'</b>. Datele rămân salvate local.';
+  }
+}
+
+async function cloudSave(){
+  if(!db)return;
+  try{
+    await db.fs.setDoc(db.ref,{txs,updatedAt:meta.updatedAt||Date.now()});
+    setSyncBadge('on','cloud sincronizat');
+  }catch(e){setSyncBadge('off','eroare la salvare');}
+}
+
+function setSync(){
+  const v=$('fSync').value.trim();
+  if(!v){alert('Alege un cod de sincronizare (ceva unic, greu de ghicit).');return;}
+  syncId=v;localStorage.setItem(LS_SYNC,v);
+  initCloud();
+}
+
+/* ---------- date ---------- */
+function pick(tk){$('fTicker').value=tk;$('fUnits').focus();}
 
 function addTx(){
   const t={
-    date:document.getElementById('fDate').value||new Date().toISOString().slice(0,10),
-    ticker:document.getElementById('fTicker').value.trim().toUpperCase(),
-    units:parseFloat(document.getElementById('fUnits').value),
-    amount:parseFloat(document.getElementById('fAmount').value)
+    date:$('fDate').value||new Date().toISOString().slice(0,10),
+    ticker:$('fTicker').value.trim().toUpperCase(),
+    units:parseFloat($('fUnits').value),
+    amount:parseFloat($('fAmount').value)
   };
-  if(!t.ticker||!t.units||!t.amount){alert('Completează simbol, unități și sumă.');return;}
-  txs.push(t);save();render();refreshPrices();
-  document.getElementById('fUnits').value='';document.getElementById('fAmount').value='';
+  if(!t.ticker||!(t.units>0)||!(t.amount>0)){alert('Completează simbol, unități și sumă (valori pozitive).');return;}
+  txs.push(t);persist();render();refreshPrices();
+  $('fUnits').value='';$('fAmount').value='';
 }
 
-function delTx(i){if(confirm('Ștergi această tranzacție?')){txs.splice(i,1);save();render();}}
+function delTx(i){if(confirm('Ștergi această tranzacție?')){txs.splice(i,1);persist();render();}}
 
 function holdings(){
   const h={};
@@ -226,15 +361,15 @@ function toRON(price,cur){
   return fx[cur]?price*fx[cur]:null;
 }
 
+/* ---------- render ---------- */
 function render(){
   const h=holdings();
-  let invested=0,value=0,haveAll=true;
-  const body=document.getElementById('holdingsBody');
-  body.innerHTML='';
-  Object.entries(h).forEach(([tk,d])=>{
+  let invested=0,value=0,haveAll=Object.keys(h).length>0;
+
+  const posHtml=Object.entries(h).map(([tk,d])=>{
     invested+=d.invested;
     const p=prices[tk];
-    let valStr='—',plStr='—',plCls='muted',priceStr='—';
+    let priceStr='—',valStr='—',plStr='—',plCls='dim';
     if(p){
       priceStr=fmt(p.price,2)+' '+p.currency;
       const ron=toRON(p.price,p.currency);
@@ -242,54 +377,58 @@ function render(){
         const v=ron*d.units;value+=v;
         const pl=v-d.invested,pct=d.invested?pl/d.invested*100:0;
         valStr=fmt(v)+' RON';
-        plStr=(pl>=0?'+':'')+fmt(pl)+' ('+(pl>=0?'+':'')+fmt(pct,1)+'%)';
-        plCls=pl>=0?'green':'red';
+        plStr=(pl>=0?'+':'')+fmt(pl)+' RON · '+(pl>=0?'+':'')+fmt(pct,1)+'%';
+        plCls=pl>=0?'up':'down';
       }else haveAll=false;
     }else haveAll=false;
-    body.innerHTML+=`<tr>
-      <td class="lead"><b>${tk}</b><span class="${plCls}">${plStr}</span></td>
-      <td class="num" data-l="Unități">${fmt(d.units,4)}</td>
-      <td class="num" data-l="Investit">${fmt(d.invested)} RON</td>
-      <td class="num" data-l="Preț">${priceStr}</td>
-      <td class="num" data-l="Valoare">${valStr}</td>
-      <td class="num ${plCls}" data-l="+/-">${plStr}</td>
-    </tr>`;
-  });
-  if(!Object.keys(h).length)body.innerHTML='<tr class="empty"><td colspan="6" class="muted">Nicio investiție încă. Adaugă prima mai sus. 🚀</td></tr>';
+    return `<div class="pos ${isETF(tk)?'':'is-sat'}">
+      <div class="tag"></div>
+      <div class="name"><b>${esc(tk)}</b><div class="small dim">${isETF(tk)?'nucleu · ETF':'satelit · acțiune'} · ${fmt(d.units,4)} unități</div></div>
+      <div class="fig"><div class="v">${valStr}</div><div class="small ${plCls}">${plStr}</div></div>
+      <div class="pos-detail"><span>investit ${fmt(d.invested)} RON</span><span>preț ${priceStr}</span></div>
+    </div>`;
+  }).join('');
+  $('posList').innerHTML=posHtml||'<div class="empty">Nicio poziție încă. Alege un simbol de mai sus și adaugă prima investiție. 🚀</div>';
 
-  document.getElementById('totalInvested').textContent=fmt(invested)+' RON';
-  document.getElementById('txCount').textContent=txs.length+' tranzacții';
-  const cv=document.getElementById('currentValue'),tp=document.getElementById('totalPL');
+  // hero
   if(haveAll&&value>0){
-    cv.textContent=fmt(value)+' RON';
-    const pl=value-invested;
-    tp.textContent=(pl>=0?'▲ +':'▼ ')+fmt(pl)+' RON ('+(pl>=0?'+':'')+fmt(invested?pl/invested*100:0,1)+'%)';
-    tp.className='small '+(pl>=0?'green':'red');
-  }else{cv.textContent='—';tp.textContent='apasă „🔄 Prețuri"';tp.className='small muted';}
+    $('pfVal').textContent=fmt(value)+' RON';
+    const pl=value-invested,pct=invested?pl/invested*100:0;
+    $('pfSub').innerHTML=`investit <b>${fmt(invested)} RON</b> · <span class="${pl>=0?'up':'down'}">${pl>=0?'▲':'▼'} ${pl>=0?'+':''}${fmt(pl)} RON (${pl>=0?'+':''}${fmt(pct,1)}%)</span>`;
+  }else if(invested>0){
+    $('pfVal').textContent=fmt(invested)+' RON';
+    $('pfSub').innerHTML=`suma investită · apasă <b>„🔄 Actualizează prețuri"</b> pentru valoarea de piață`;
+  }else{
+    $('pfVal').textContent='0 RON';
+    $('pfSub').textContent='Adaugă prima investiție mai jos — inelul începe să se umple.';
+  }
 
-  const ym=new Date().toISOString().slice(0,7);
-  const m=txs.filter(t=>t.date.startsWith(ym)).reduce((s,t)=>s+t.amount,0);
-  document.getElementById('monthInvested').textContent=fmt(m)+' / '+BUDGET;
-  document.getElementById('monthBar').style.width=Math.min(100,m/BUDGET*100)+'%';
+  // inelul lunii
+  const now=new Date(),ym=now.toISOString().slice(0,7);
+  $('monthName').textContent=now.toLocaleDateString('ro-RO',{month:'long'});
+  let mEtf=0,mStk=0;
+  txs.filter(t=>t.date.startsWith(ym)).forEach(t=>{isETF(t.ticker)?mEtf+=t.amount:mStk+=t.amount;});
+  $('monthTotal').innerHTML=fmt(mEtf+mStk)+'<span class="dim" style="font-size:.8rem">/'+BUDGET+'</span>';
+  $('coreProg').textContent=fmt(mEtf)+' / '+ETF_TARGET+' RON';
+  $('satProg').textContent=fmt(mStk)+' / '+STK_TARGET+' RON';
+  $('arcCore').style.strokeDashoffset=C_CORE*(1-Math.min(1,mEtf/ETF_TARGET));
+  $('arcSat').style.strokeDashoffset=C_SAT*(1-Math.min(1,mStk/STK_TARGET));
 
-  const tb=document.getElementById('txBody');
-  tb.innerHTML='';
-  [...txs].reverse().forEach((t,ri)=>{
-    const i=txs.length-1-ri;
-    tb.innerHTML+=`<tr>
-      <td class="lead"><b>${t.ticker}</b><span class="muted small">${t.date}</span></td>
-      <td class="num" data-l="Unități">${fmt(t.units,4)}</td>
-      <td class="num" data-l="Sumă">${fmt(t.amount)} RON</td>
-      <td class="num act"><button class="danger" onclick="delTx(${i})" aria-label="Șterge">✕</button></td>
-    </tr>`;
-  });
-  if(!txs.length)tb.innerHTML='<tr class="empty"><td colspan="5" class="muted">Istoricul apare aici.</td></tr>';
+  // istoric
+  const list=[...txs].map((t,i)=>({...t,i})).reverse();
+  $('txList').innerHTML=list.length?list.map(t=>
+    `<div class="tx">
+      <div class="l"><b class="${isETF(t.ticker)?'core-c':'sat-c'}">${esc(t.ticker)}</b> <span class="small dim">· ${esc(t.date)}</span></div>
+      <div class="r"><span>${fmt(t.units,4)} u · <b>${fmt(t.amount)} RON</b></span><button class="del" onclick="delTx(${t.i})" aria-label="Șterge tranzacția">✕</button></div>
+    </div>`
+  ).join(''):'<div class="empty">Fiecare cumpărare pe care o adaugi apare aici, cu tot istoricul.</div>';
 
+  // GTA VI
   const days=Math.ceil((new Date('2026-11-19')-new Date())/86400000);
-  document.getElementById('gtaCountdown').textContent=days>0?days+' zile':'Lansat! 🎉';
+  $('gtaDays').textContent=days>0?days+' zile':'lansat 🎉';
 }
 
-// ---- Prețuri live ----
+/* ---------- preturi live ---------- */
 const PROXIES=[
   u=>'https://corsproxy.io/?url='+encodeURIComponent(u),
   u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u)
@@ -318,21 +457,22 @@ async function fetchPrice(tk){
 }
 
 async function refreshPrices(){
-  const st=document.getElementById('status');
+  const st=$('status');
   const tks=Object.keys(holdings());
   if(!tks.length){st.textContent='';return;}
-  st.textContent='Se actualizează prețurile…';
-  try{await fetchFX();}catch(e){st.textContent='⚠️ Curs valutar indisponibil momentan.';}
+  st.textContent='se actualizează…';
+  try{await fetchFX();}catch(e){st.textContent='⚠ curs valutar indisponibil — reîncearcă';}
   let ok=0;
   await Promise.all(tks.map(async tk=>{
     try{prices[tk]=await fetchPrice(tk);ok++;}catch(e){}
   }));
   st.textContent=ok===tks.length
-    ?'✅ Actualizat la '+new Date().toLocaleTimeString('ro-RO')
-    :`⚠️ ${ok}/${tks.length} prețuri obținute. Reîncearcă în câteva secunde.`;
+    ?'✓ actualizat '+new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})
+    :`⚠ ${ok}/${tks.length} prețuri obținute — reîncearcă în câteva secunde`;
   render();
 }
 
+/* ---------- export / import ---------- */
 function exportData(){
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(JSON.stringify(txs,null,2));
@@ -342,12 +482,14 @@ function exportData(){
 function importData(ev){
   const f=ev.target.files[0];if(!f)return;
   const rd=new FileReader();
-  rd.onload=()=>{try{txs=JSON.parse(rd.result);save();render();refreshPrices();}catch(e){alert('Fișier invalid');}};
+  rd.onload=()=>{try{txs=JSON.parse(rd.result);persist();render();refreshPrices();}catch(e){alert('Fișier invalid — exportă din aplicație și importă același format.');}};
   rd.readAsText(f);
 }
 
-document.getElementById('fDate').value=new Date().toISOString().slice(0,10);
+/* ---------- start ---------- */
+$('fDate').value=new Date().toISOString().slice(0,10);
 render();
+initCloud();
 if(txs.length)refreshPrices();
 setInterval(render,60000);
 </script>

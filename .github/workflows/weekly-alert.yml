@@ -13,6 +13,8 @@ env:
   ETF: "IWDA.AS"        # ETF-ul tau principal (simbol Yahoo)
   STOCK: "TTWO"         # satelit optional
   BUDGET_LUNAR: "500"   # RON
+  ETF_LUNAR: "400"      # 80% in ETF
+  STK_LUNAR: "100"      # 20% in actiuni (TTWO)
 
 jobs:
   alert:
@@ -36,7 +38,8 @@ jobs:
           ETF_I=$(get "$ETF" | info);   ETF_P=$(echo $ETF_I|cut -d'|' -f1); ETF_C=$(echo $ETF_I|cut -d'|' -f2); ETF_CH=$(echo $ETF_I|cut -d'|' -f3)
           STK_I=$(get "$STOCK" | info); STK_P=$(echo $STK_I|cut -d'|' -f1); STK_C=$(echo $STK_I|cut -d'|' -f2); STK_CH=$(echo $STK_I|cut -d'|' -f3)
 
-          TRANSA=$(( BUDGET_LUNAR / 4 ))
+          TRANSA_ETF=$(( ETF_LUNAR / 4 ))
+          TRANSA_STK=$(( STK_LUNAR / 4 ))
 
           # Recomandare pe reguli (strategia DCA, risc minim):
           CTX="Piata stabila — continua planul."
@@ -50,10 +53,10 @@ jobs:
           DAYS=$(( ( $(date -d 2026-11-19 +%s) - $(date +%s) ) / 86400 ))
 
           MSG="RECOMANDAREA SAPTAMANII:\n"
-          MSG="${MSG}Cumpara ~${TRANSA} RON de $ETF (transa saptamanala din bugetul de ${BUDGET_LUNAR} RON/luna).\n"
+          MSG="${MSG}Cumpara ~${TRANSA_ETF} RON de $ETF + ~${TRANSA_STK} RON de $STOCK\n(transa saptamanala din ${BUDGET_LUNAR} RON/luna, alocare 80/20).\n"
           MSG="${MSG}${CTX}\n\n"
           MSG="${MSG}$ETF: $ETF_P $ETF_C ($ETF_CH% / sapt)\n"
-          MSG="${MSG}$STOCK: $STK_P $STK_C ($STK_CH% / sapt) — satelit optional, max 15%\n"
+          MSG="${MSG}$STOCK: $STK_P $STK_C ($STK_CH% / sapt)\n"
           MSG="${MSG}GTA VI: $DAYS zile\n\n"
           MSG="${MSG}Regula: cumpara constant, nu vinde la panica. Orizont 10+ ani."
 
