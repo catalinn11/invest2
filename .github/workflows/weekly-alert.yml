@@ -1,35 +1,64 @@
-name: Weekly investing alert
+name: Notificare saptamanala investitii
 
 on:
   schedule:
-    # Every Monday at 07:00 UTC (09:00/10:00 Romania time)
+    # In fiecare luni la 07:00 UTC (~09:00/10:00 ora Romaniei)
     - cron: '0 7 * * 1'
-  workflow_dispatch: {}   # allows manual run from the Actions tab
+  workflow_dispatch: {}   # permite rulare manuala din tab-ul Actions
 
 env:
-  # 1. Install the "ntfy" app on your phone, subscribe to this topic.
-  # 2. Change it to something secret and unique (anyone who knows it can see your alerts).
+  # 1. Instaleaza aplicatia "ntfy" pe telefon si aboneaza-te la acest topic.
+  # 2. Schimba-l cu un nume secret, unic (oricine stie topicul iti vede notificarile).
   NTFY_TOPIC: investitii-catalin-x7k2
-  # Tickers to watch (Yahoo Finance symbols), space-separated
-  TICKERS: "TTWO IWDA.AS VUAA.L"
+  ETF: "IWDA.AS"        # ETF-ul tau principal (simbol Yahoo)
+  STOCK: "TTWO"         # satelit optional
+  BUDGET_LUNAR: "500"   # RON
 
 jobs:
   alert:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch prices and send notification
+      - name: Analizeaza si trimite recomandarea
         run: |
-          MSG=""
-          for T in $TICKERS; do
-            JSON=$(curl -s "https://query1.finance.yahoo.com/v8/finance/chart/$T?interval=1d&range=5d" -H "User-Agent: Mozilla/5.0")
-            PRICE=$(echo "$JSON" | python3 -c "import sys,json;m=json.load(sys.stdin)['chart']['result'][0]['meta'];print(f\"{m['regularMarketPrice']:.2f} {m['currency']}\")" 2>/dev/null || echo "n/a")
-            PREV=$(echo "$JSON" | python3 -c "import sys,json;m=json.load(sys.stdin)['chart']['result'][0]['meta'];p=m.get('chartPreviousClose') or m.get('previousClose');c=m['regularMarketPrice'];print(f\"{(c-p)/p*100:+.1f}%\")" 2>/dev/null || echo "")
-            MSG="$MSG$T: $PRICE ($PREV saptamana)\n"
-          done
+          get() {
+            curl -s "https://query1.finance.yahoo.com/v8/finance/chart/$1?interval=1d&range=5d" -H "User-Agent: Mozilla/5.0"
+          }
+          info() {
+            python3 -c "
+          import sys, json
+          m = json.load(sys.stdin)['chart']['result'][0]['meta']
+          p = m.get('chartPreviousClose') or m.get('previousClose')
+          c = m['regularMarketPrice']
+          print(f\"{c:.2f}|{m['currency']}|{(c-p)/p*100:+.1f}\")
+          " 2>/dev/null || echo "n/a|n/a|0"
+          }
+
+          ETF_I=$(get "$ETF" | info);   ETF_P=$(echo $ETF_I|cut -d'|' -f1); ETF_C=$(echo $ETF_I|cut -d'|' -f2); ETF_CH=$(echo $ETF_I|cut -d'|' -f3)
+          STK_I=$(get "$STOCK" | info); STK_P=$(echo $STK_I|cut -d'|' -f1); STK_C=$(echo $STK_I|cut -d'|' -f2); STK_CH=$(echo $STK_I|cut -d'|' -f3)
+
+          TRANSA=$(( BUDGET_LUNAR / 4 ))
+
+          # Recomandare pe reguli (strategia DCA, risc minim):
+          CTX="Piata stabila — continua planul."
+          CMP=$(python3 -c "print(1 if float('$ETF_CH') <= -3 else (2 if float('$ETF_CH') >= 3 else 0))")
+          if [ "$CMP" = "1" ]; then
+            CTX="Piata a scazut $ETF_CH% — cumperi mai multe unitati la acelasi pret. Exact asa functioneaza DCA, nu te opri."
+          elif [ "$CMP" = "2" ]; then
+            CTX="Piata a urcat $ETF_CH% — nu astepta o scadere, planul ramane neschimbat."
+          fi
+
           DAYS=$(( ( $(date -d 2026-11-19 +%s) - $(date +%s) ) / 86400 ))
-          MSG="$MSG\nGTA VI: $DAYS zile ramase\nNu uita: investeste pana la 500 RON luna aceasta (75% ETF / 25% actiuni)."
+
+          MSG="RECOMANDAREA SAPTAMANII:\n"
+          MSG="${MSG}Cumpara ~${TRANSA} RON de $ETF (transa saptamanala din bugetul de ${BUDGET_LUNAR} RON/luna).\n"
+          MSG="${MSG}${CTX}\n\n"
+          MSG="${MSG}$ETF: $ETF_P $ETF_C ($ETF_CH% / sapt)\n"
+          MSG="${MSG}$STOCK: $STK_P $STK_C ($STK_CH% / sapt) — satelit optional, max 15%\n"
+          MSG="${MSG}GTA VI: $DAYS zile\n\n"
+          MSG="${MSG}Regula: cumpara constant, nu vinde la panica. Orizont 10+ ani."
+
           curl -s \
-            -H "Title: Briefing saptamanal investitii" \
+            -H "Title: In ce investesc saptamana asta" \
             -H "Tags: chart_with_upwards_trend" \
             -d "$(echo -e "$MSG")" \
             "https://ntfy.sh/$NTFY_TOPIC"
