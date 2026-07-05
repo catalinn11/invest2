@@ -9,7 +9,7 @@ on:
 env:
   # 1. Instaleaza aplicatia "ntfy" pe telefon si aboneaza-te la acest topic.
   # 2. Schimba-l cu un nume secret, unic (oricine stie topicul iti vede notificarile).
-  NTFY_TOPIC: investitii-ctn-ZB<#nJApyd9a1E!
+  NTFY_TOPIC: investitii-ctn-ZBnJApyd9a1E!
   ETF: "IWDA.AS"        # ETF-ul tau principal (simbol Yahoo)
   STOCK: "TTWO"         # satelit optional
   BUDGET_LUNAR: "500"   # RON
